@@ -2,10 +2,12 @@ import requests
 import time
 import argparse
 import logging
+import os
+from logging.handlers import TimedRotatingFileHandler
 
 def make_api_request():
-
-    api_url = " https://kuma.flotech.be/api/push/DqF1v25TRr?status=up&msg=OK&ping="  # Replace with your API URL
+    # Define the API endpoint URL
+    api_url = "https://example.com/api"  # Replace with your API URL
     
     try:
         # Make the GET request
@@ -23,12 +25,26 @@ def make_api_request():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Make periodic API requests")
     parser.add_argument("--interval", type=int, default=60, help="Time interval between requests in seconds")
-    parser.add_argument("--logfile", type=str, default="api_requests.log", help="Path to the log file")
+    parser.add_argument("--logdir", type=str, default="./logs", help="Directory for log files")
     args = parser.parse_args()
 
-    # Configure logging to write to the specified log file
-    logging.basicConfig(filename=args.logfile, level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+    # Create the log directory if it doesn't exist
+    os.makedirs(args.logdir, exist_ok=True)
+
+    # Configure logging to use a TimedRotatingFileHandler for log files
+    log_file = os.path.join(args.logdir, "api_requests.log")
+    file_handler = TimedRotatingFileHandler(log_file, when="midnight", interval=1, backupCount=30)
+    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+    file_handler.setFormatter(formatter)
+
+    # Create a console handler for logging to the console
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(formatter)
+
     logger = logging.getLogger()
+    logger.addHandler(file_handler)
+    logger.addHandler(console_handler)
+    logger.setLevel(logging.INFO)
 
     while True:
         make_api_request()
