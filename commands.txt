@@ -1,0 +1,2 @@
+grep CRON /var/log/syslog
+@reboot sleep 60 && python script.py --interval 60 --logdir /home/floris/la-calypso/logs
