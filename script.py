@@ -7,7 +7,7 @@ from logging.handlers import TimedRotatingFileHandler
 
 def make_api_request():
     # Define the API endpoint URL
-    api_url = "https://example.com/api"  # Replace with your API URL
+    api_url = "https://kuma.flotech.be/api/push/DqF1v25TRr?status=up&msg=OK&ping="  # Replace with your API URL
     
     try:
         # Make the GET request
